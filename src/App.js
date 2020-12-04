@@ -1,25 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{useState} from 'react'
+import "bootstrap/dist/css/bootstrap.min.css"
+import "react-toastify/dist/ReactToastify.css"
 
-function App() {
+import './App.css'
+import { Container, Row,Col } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
+import BuyPage from './components/BuyPage'
+import Cart from './components/Cart'
+
+const App = () => {
+  const [cartItem,setCartItem] = useState([])
+  const addToCart = item => {
+    const isAlreadyAdded = cartItem.findIndex(function(array) {
+      return array.id === item.id;
+    });
+    if(isAlreadyAdded !== -1){
+      return toast("Item already added to cart",{
+        type:"error"
+      });
+      
+    }
+    setCartItem([...cartItem,item])
+  }
+  const buyNow = () => {
+    setCartItem([])
+    toast("Order placed Successfuly",{
+      type:'success'
+    })
+  }
+  const removeItem = item => {
+    setCartItem(cartItem.filter(toRemove => toRemove.id !== item.id))
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Container fluid>
+      <ToastContainer />
+      <Row>
+        <Col md="8">
+          <BuyPage addToCart={addToCart} />
+        </Col>
+        <Col md="4">
+          <Cart cartItem={cartItem} removeItem={removeItem} buyNow={buyNow} />
+        </Col>
+      </Row>
+    </Container>
+  )
 }
 
-export default App;
+export default App
+
